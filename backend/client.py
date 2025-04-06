@@ -36,3 +36,37 @@ class BinanceTestClient:
             return requests.get(f"{self.base_url}{endpoint}", params=params, headers=headers)
 
         return requests.post(f"{self.base_url}{endpoint}", params=params, headers=headers)
+
+
+    def get_account_info(self):
+        endpoint = "/v3/account"
+        params = {}
+        response = self._execute_request(endpoint, params)
+        return response.json()
+
+    def get_price(self, symbol: str):
+        endpoint = "/v3/ticker/price"
+        url = f"{self.base_url}{endpoint}"
+        response = requests.get(url, params={"symbol": symbol.upper()})
+        return response.json()
+
+    def get_candlesticks(self, symbol: str, interval: str = '1h', limit: int = 50):
+        endpoint = "/v3/klines"
+        url = f"{self.base_url}{endpoint}"
+        params = {
+            "symbol": symbol.upper(),
+            "interval": interval,
+            "limit": limit
+        }
+        response = requests.get(url, params=params)
+        return response.json()
+
+    def create_order(self, order: dict):
+        endpoint = "/v3/order/test" if order.get("test") else "/v3/order"
+        params = {
+            "symbol": order["symbol"],
+            "side": order["side"],
+            "type": order["order_type"],
+            "quantity": order["quantity"],
+        }
+        return self._execute_request(endpoint, params, method='POST').json()

@@ -8,7 +8,6 @@ class AssetBalance(BaseModel):
 
 
 class AccountInfo(BaseModel):
-    uid: int
     account_type: str
     btc_balance: AssetBalance
     usdt_balance: AssetBalance
